@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func ReadFile(path string) string { 
+func ReadFile(path string) string {
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatalf("Could not open file: %s", path)
@@ -87,11 +87,8 @@ func main() {
 	if len(os.Args) < 3 {
 		log.Fatal("Usage: go run pipeline.go <text_file> <stop_words_file>")
 	}
-	result :=Sort(Frequencies(RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))))
-	for i, entry := range sortedWordFreqs {
-		if i >= 25 {
-			break
-		}
+	result := Sort(Frequencies(RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))))
+	for _, entry := range result {
 		fmt.Printf("%s - %d\n", entry.Word, entry.Count)
 	}
 }
