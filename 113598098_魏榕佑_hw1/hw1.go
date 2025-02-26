@@ -15,12 +15,13 @@ func ReadFile(path string) string {
 	if err != nil {
 		log.Fatalf("Could not open file: %s", path)
 	}
-	defer file.Close()
+	//defer file.Close()
 	var content string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		content += scanner.Text() + "\n" // 讀取每一行並加換行符
 	}
+	//defer file.Close()
 	return content
 }
 
@@ -84,10 +85,14 @@ func Sort(wordFreqs map[string]int) []struct {
 }
 
 func main() {
-	if len(os.Args) < 3 {
-		log.Fatal("Usage: go run pipeline.go <text_file> <stop_words_file>")
-	}
 	result := Sort(Frequencies(RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))))
+	//fmt.Printf(os.Args[1])
+	//fmt.Printf(ReadFile(os.Args[1]))
+	//fmt.Printf(ReadFile(os.Args[2]))
+	//fmt.Printf("%s", FilterCharsAndNormalize(ReadFile(os.Args[1])))
+	//fmt.Printf("%s", []string{"st", "st", "st", "prgrm", "prgrm", "prgrm", "prgrm"})
+	//fmt.Printf("%s", Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))
+	//fmt.Printf("%s", RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1])))))
 	for _, entry := range result {
 		fmt.Printf("%s - %d\n", entry.Word, entry.Count)
 	}

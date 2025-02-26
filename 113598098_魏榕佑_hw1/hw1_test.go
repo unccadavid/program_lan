@@ -53,11 +53,17 @@ func TestFrequencies(t *testing.T) {
 	}
 }
 
-// func TestSort(t *testing.T) {
-// 	input := map[string]int{"test": 3, "program": 4}
-// 	expected := [("program",4),("test",3)]
-// 	result := sort(input)
-// 	if result != expected {
-// 		t.Errorf("Expected %q but got %q", expected, result)
-// 	}
-// }
+func TestSort(t *testing.T) {
+	input := map[string]int{"test": 3, "program": 4}
+	expected := []struct {
+		Word  string
+		Count int
+	}{
+		{"program", 4},
+		{"test", 3},
+	}
+	result := Sort(input)
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %q but got %q", expected, result)
+	}
+}
