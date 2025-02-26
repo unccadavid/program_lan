@@ -15,13 +15,11 @@ func ReadFile(path string) string {
 	if err != nil {
 		log.Fatalf("Could not open file: %s", path)
 	}
-	//defer file.Close()
 	var content string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		content += scanner.Text() + "\n" // 讀取每一行並加換行符
+		content += scanner.Text() + "\n"
 	}
-	//defer file.Close()
 	return content
 }
 
@@ -34,23 +32,26 @@ func Scan(text string) []string {
 	return strings.Fields(text)
 }
 
-func RemoveStopWords(stopWordsFile string) func([]string) []string {
-	stopWordsContent := ReadFile(stopWordsFile)
-	stopWords := make(map[string]struct{})
-
-	for _, word := range strings.Split(stopWordsContent, ",") {
-		stopWords[strings.TrimSpace(word)] = struct{}{}
-	}
-
-	return func(wordList []string) []string {
+func RemoveStopWords(wordList []string) func(string) []string {
+	stopwordfilter := func(path string) []string {
+		stopWordsContent := ReadFile(path)
 		var filteredWords []string
+		stopWords := strings.Split(stopWordsContent, ",")
 		for _, word := range wordList {
-			if _, found := stopWords[word]; !found {
+			var temp bool = true
+			for _, stopWord := range stopWords {
+				if word == stopWord {
+					temp = false
+					break
+				}
+			}
+			if temp == true {
 				filteredWords = append(filteredWords, word)
 			}
 		}
 		return filteredWords
 	}
+	return stopwordfilter
 }
 
 func Frequencies(wordList []string) map[string]int {
@@ -85,14 +86,14 @@ func Sort(wordFreqs map[string]int) []struct {
 }
 
 func main() {
-	result := Sort(Frequencies(RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))))
-	//fmt.Printf(os.Args[1])
-	//fmt.Printf(ReadFile(os.Args[1]))
-	//fmt.Printf(ReadFile(os.Args[2]))
-	//fmt.Printf("%s", FilterCharsAndNormalize(ReadFile(os.Args[1])))
-	//fmt.Printf("%s", []string{"st", "st", "st", "prgrm", "prgrm", "prgrm", "prgrm"})
-	//fmt.Printf("%s", Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))
-	//fmt.Printf("%s", RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1])))))
+	result := Sort(Frequencies(RemoveStopWords(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))(os.Args[2])))
+	// //fmt.Printf(os.Args[1])
+	// //fmt.Printf(ReadFile(os.Args[1]))
+	// //fmt.Printf(ReadFile(os.Args[2]))
+	// //fmt.Printf("%s", FilterCharsAndNormalize(ReadFile(os.Args[1])))
+	// //fmt.Printf("%s", []string{"st", "st", "st", "prgrm", "prgrm", "prgrm", "prgrm"})
+	// //fmt.Printf("%s", Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))
+	// //fmt.Printf("%s", RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1])))))
 	for _, entry := range result {
 		fmt.Printf("%s - %d\n", entry.Word, entry.Count)
 	}

@@ -37,8 +37,8 @@ func TestRemovestopwords(t *testing.T) {
 	input := []string{"this", "is", "a", "test", "this", "test", "is", "only", "a", "test"}
 	path := "stop_words.txt"
 	expected := []string{"test", "test", "test"}
-	stop_word_filter := RemoveStopWords(path)
-	result := stop_word_filter(input)
+	stop_word_filter := RemoveStopWords(input)
+	result := stop_word_filter(path)
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("Expected %q but got %q", expected, result)
 	}
