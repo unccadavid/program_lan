@@ -1,6 +1,5 @@
 import unittest
 from Question_1 import *
-
 class TestTF06(unittest.TestCase):
     def test_filter_chars_and_normalize(self):
         input = "This is a test. This test is only a test."

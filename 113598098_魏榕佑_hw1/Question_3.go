@@ -105,11 +105,4 @@ func PrintAll(word_freqs []struct {
 
 func main() {
 	PrintAll(Sort(Frequencies(RemoveStopWords(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))(os.Args[2])))[0:25])
-	// //fmt.Printf(os.Args[1])
-	// //fmt.Printf(ReadFile(os.Args[1]))
-	// //fmt.Printf(ReadFile(os.Args[2]))
-	// //fmt.Printf("%s", FilterCharsAndNormalize(ReadFile(os.Args[1])))
-	// //fmt.Printf("%s", []string{"st", "st", "st", "prgrm", "prgrm", "prgrm", "prgrm"})
-	// //fmt.Printf("%s", Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))
-	// //fmt.Printf("%s", RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1])))))
 }
