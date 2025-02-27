@@ -7,7 +7,7 @@ import (
 
 func TestReadFile(t *testing.T) {
 	path := "text_file.txt"
-	expected := "This is a test. This test is only a test.\n"
+	expected := "program This is a test. This test is only a test.\nprogram program program program"
 	result := ReadFile(path)
 
 	if result != expected {
@@ -34,7 +34,7 @@ func TestScan(t *testing.T) {
 }
 
 func TestRemovestopwords(t *testing.T) {
-	input := []string{"this", "is", "a", "test", "this", "test", "is", "only", "a", "test"}
+	input := []string{"this", "is", "a", "test", "this", "test", "is", "only", "a", "test", "your"}
 	path := "stop_words.txt"
 	expected := []string{"test", "test", "test"}
 	stop_word_filter := RemoveStopWords(input)

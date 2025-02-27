@@ -15,11 +15,19 @@ func ReadFile(path string) string {
 	if err != nil {
 		log.Fatalf("Could not open file: %s", path)
 	}
-	var content string
+	defer file.Close()
+	var builder strings.Builder
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		content += scanner.Text() + "\n"
+		if builder.Len() > 0 {
+			builder.WriteString("\n")
+		}
+		builder.WriteString(scanner.Text())
 	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	content := builder.String()
 	return content
 }
 
@@ -37,15 +45,19 @@ func RemoveStopWords(wordList []string) func(string) []string {
 		stopWordsContent := ReadFile(path)
 		var filteredWords []string
 		stopWords := strings.Split(stopWordsContent, ",")
+		for i, stopword := range stopWords {
+			stopWords[i] = strings.TrimSpace(stopword)
+		}
+		var temp bool
 		for _, word := range wordList {
-			var temp bool = true
+			temp = false
 			for _, stopWord := range stopWords {
 				if word == stopWord {
-					temp = false
+					temp = true
 					break
 				}
 			}
-			if temp == true {
+			if temp == false {
 				filteredWords = append(filteredWords, word)
 			}
 		}
@@ -70,23 +82,29 @@ func Sort(wordFreqs map[string]int) []struct {
 		Word  string
 		Count int
 	}
-
 	for word, count := range wordFreqs {
 		sortedWords = append(sortedWords, struct {
 			Word  string
 			Count int
 		}{word, count})
 	}
-
 	sort.Slice(sortedWords, func(i, j int) bool {
 		return sortedWords[i].Count > sortedWords[j].Count
 	})
-
 	return sortedWords
 }
 
+func PrintAll(word_freqs []struct {
+	Word  string
+	Count int
+}) {
+	for _, entry := range word_freqs {
+		fmt.Printf("%s - %d\n", entry.Word, entry.Count)
+	}
+}
+
 func main() {
-	result := Sort(Frequencies(RemoveStopWords(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))(os.Args[2])))
+	PrintAll(Sort(Frequencies(RemoveStopWords(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))(os.Args[2])))[0:25])
 	// //fmt.Printf(os.Args[1])
 	// //fmt.Printf(ReadFile(os.Args[1]))
 	// //fmt.Printf(ReadFile(os.Args[2]))
@@ -94,7 +112,4 @@ func main() {
 	// //fmt.Printf("%s", []string{"st", "st", "st", "prgrm", "prgrm", "prgrm", "prgrm"})
 	// //fmt.Printf("%s", Scan(FilterCharsAndNormalize(ReadFile(os.Args[1]))))
 	// //fmt.Printf("%s", RemoveStopWords(os.Args[2])(Scan(FilterCharsAndNormalize(ReadFile(os.Args[1])))))
-	for _, entry := range result {
-		fmt.Printf("%s - %d\n", entry.Word, entry.Count)
-	}
 }
